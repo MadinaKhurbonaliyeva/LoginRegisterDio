@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:for_test/data/services.dart';
+import 'package:for_test/srs/presentation/verify_page.dart';
+import 'package:for_test/srs/presentation/widgets/input_data.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key});
@@ -9,10 +13,10 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final formKey = GlobalKey<FormState>();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  bool rememberMe = false;
-
+  TextEditingController inputLogin = TextEditingController();
+  TextEditingController inputEmail = TextEditingController();
+  TextEditingController inputName = TextEditingController();
+  TextEditingController inputPassword = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +31,10 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
           ),
           const Padding(
-            padding: EdgeInsets.only(top: 154, left: 110),
+            padding: EdgeInsets.only(
+              top: 154,
+              left: 110,
+            ),
             child: Text(
               'Register',
               textAlign: TextAlign.center,
@@ -46,125 +53,98 @@ class _RegisterPageState extends State<RegisterPage> {
             right: 20,
             child: Column(
               children: [
-                TextFormField(
-                  controller: emailController,
-                  decoration: InputDecoration(
-                    labelText: "Login...",
-                    labelStyle: const TextStyle(
-                      color: Color(0xFF417BEA),
-                      fontSize: 14,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w400,
+                Column(
+                  children: [
+                    InputData(
+                      inputName: inputName,
+                      labelText: 'Name',
                     ),
-                    fillColor: const Color(0xFF417BEA),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      borderSide: const BorderSide(
-                        color: Color(0xFF417BEA),
-                      ),
+                    const SizedBox(height: 16),
+                    InputData(
+                      inputName: inputLogin,
+                      labelText: 'Enter your login',
                     ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      borderSide: const BorderSide(
-                        color: Color(0xFF417BEA),
-                      ),
+                    const SizedBox(
+                      height: 16,
                     ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: passwordController,
-                  decoration: InputDecoration(
-                    labelText: "Enter your password",
-                    labelStyle: const TextStyle(
-                      color: Color(0xFF417BEA),
-                      fontSize: 14,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w400,
+                    InputData(
+                      inputName: inputEmail,
+                      labelText: 'Enter your Email',
                     ),
-                    fillColor: const Color(0xFF417BEA),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      borderSide: const BorderSide(
-                        color: Color(0xFF417BEA),
-                      ),
+                    const SizedBox(
+                      height: 16,
                     ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      borderSide: const BorderSide(
-                        color: Color(0xFF417BEA),
-                      ),
+                    InputData(
+                      inputName: inputPassword,
+                      labelText: 'Enter your Password',
                     ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                TextFormField(
-                  controller: passwordController,
-                  decoration: InputDecoration(
-                    labelText: "Enter your Email",
-                    labelStyle: const TextStyle(
-                      color: Color(0xFF417BEA),
-                      fontSize: 14,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w400,
+                    const SizedBox(
+                      height: 15,
                     ),
-                    fillColor: const Color(0xFF417BEA),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      borderSide: const BorderSide(
-                        color: Color(0xFF417BEA),
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      borderSide: const BorderSide(
-                        color: Color(0xFF417BEA),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                TextFormField(
-                  controller: passwordController,
-                  decoration: InputDecoration(
-                    labelText: "Enter your Name...",
-                    labelStyle: const TextStyle(
-                      color: Color(0xFF417BEA),
-                      fontSize: 14,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w400,
-                    ),
-                    fillColor: const Color(0xFF417BEA),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      borderSide: const BorderSide(
-                        color: Color(0xFF417BEA),
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      borderSide: const BorderSide(
-                        color: Color(0xFF417BEA),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
+                  ],
                 ),
                 Positioned(
                   bottom: 95,
                   left: 10,
                   right: 10,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Handle button press
+                  child: GestureDetector(
+                    onTap: () async {
+                      if (inputEmail.text.isEmpty ||
+                          inputLogin.text.isEmpty ||
+                          inputName.text.isEmpty ||
+                          inputPassword.text.isEmpty) {
+                        Fluttertoast.showToast(
+                          msg: "Malumotlarni to'ldiring",
+                          toastLength: Toast.LENGTH_SHORT,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0,
+                        );
+                      } else {
+                        final a = await Services.register(
+                          RegisterUser(
+                            name: inputName.text,
+                            login: inputLogin.text,
+                            password: inputPassword.text,
+                            email: inputEmail.text,
+                          ),
+                        );
+                        if (a == null) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => VerifyPage(
+                                        inputEmail: inputEmail.text,
+                                      )));
+                        } else if (a.isSuccess == false) {
+                          Fluttertoast.showToast(
+                            msg: a.messages,
+                            toastLength: Toast.LENGTH_SHORT,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0,
+                          );
+                        }
+                      }
                     },
-                    child: const Text('Login'),
+                    child: Container(
+                      height: 46,
+                      decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.circular(12)),
+                      child: const Center(
+                        child: Text(
+                          'Verify',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ],

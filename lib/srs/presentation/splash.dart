@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:for_test/srs/presentation/register_page.dart';
 
 import 'login_page.dart';
 
@@ -22,7 +23,7 @@ class _SplashPageState extends State<SplashPage> {
   void goToNextPage() {
     Future.delayed(const Duration(seconds: 2), () {
       Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => const LoginPage()));
+          .push(MaterialPageRoute(builder: (context) => const RegisterPage()));
     });
   }
 

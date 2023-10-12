@@ -1,5 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:for_test/data/services.dart';
 import 'package:for_test/srs/presentation/register_page.dart';
+import 'package:for_test/srs/presentation/widgets/input_data.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key});
@@ -10,8 +14,8 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final formKey = GlobalKey<FormState>();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  TextEditingController inputLogin = TextEditingController();
+  TextEditingController inputPassord = TextEditingController();
   bool rememberMe = false;
   bool isLoading = true;
 
@@ -59,60 +63,13 @@ class _LoginPageState extends State<LoginPage> {
             right: 20,
             child: Column(
               children: [
-                TextFormField(
-                  controller: emailController,
-                  decoration: InputDecoration(
-                    labelText: "enter email...",
-                    labelStyle: const TextStyle(
-                      color: Color(0xFF417BEA),
-                      fontSize: 14,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w400,
-                    ),
-                    fillColor: const Color(0xFF417BEA),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      borderSide: const BorderSide(
-                        color: Color(0xFF417BEA),
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      borderSide: const BorderSide(
-                        color: Color(0xFF417BEA),
-                      ),
-                    ),
-                  ),
-                ),
+                InputData(inputName: inputLogin, labelText: "Enter login..."),
                 const SizedBox(height: 16),
-                TextFormField(
-                  controller: passwordController,
-                  decoration: InputDecoration(
-                    labelText: "Enter your password",
-                    labelStyle: const TextStyle(
-                      color: Color(0xFF417BEA),
-                      fontSize: 14,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w400,
-                    ),
-                    fillColor: const Color(0xFF417BEA),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      borderSide: const BorderSide(
-                        color: Color(0xFF417BEA),
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      borderSide: const BorderSide(
-                        color: Color(0xFF417BEA),
-                      ),
-                    ),
-                  ),
-                ),
+                InputData(
+                    inputName: inputPassord, labelText: "Enter your password"),
                 const SizedBox(height: 16),
                 isLoading
-                    ? CircularProgressIndicator() // Show the loading indicator
+                    ? const CircularProgressIndicator() // Show the loading indicator
                     : Switch(
                         value: rememberMe,
                         onChanged: (newValue) {
@@ -140,11 +97,41 @@ class _LoginPageState extends State<LoginPage> {
             left: 20,
             right: 20,
             child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const RegisterPage()),
-                );
+              onPressed: () async {
+                if (inputLogin.text.isEmpty || inputPassord.text.isEmpty) {
+                  Fluttertoast.showToast(
+                    msg: "Malumotlarni to'ldiring",
+                    toastLength: Toast.LENGTH_SHORT,
+                    timeInSecForIosWeb: 1,
+                    backgroundColor: Colors.red,
+                    textColor: Colors.white,
+                    fontSize: 16.0,
+                  );
+                } else {
+                  final a = await Services.loginUser(
+                    login: inputLogin.text,
+                    password: inputPassord.text,
+                  );
+                  print(a);
+                  if (a == null) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Scaffold(
+                                    body: Center(
+                                  child: Text('Login boldi'),
+                                ))));
+                  } else if (a.isSuccess == false) {
+                    Fluttertoast.showToast(
+                      msg: "${a.messages}",
+                      toastLength: Toast.LENGTH_SHORT,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.red,
+                      textColor: Colors.white,
+                      fontSize: 16.0,
+                    );
+                  }
+                }
               },
               child: const Text('Login'),
             ),
